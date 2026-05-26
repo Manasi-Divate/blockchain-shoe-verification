@@ -1,0 +1,11 @@
+const contract = ShoeVerification.attach("YOUR_CONTRACT_ADDRESS")
+const ShoeVerification = await ethers.getContractFactory("ShoeVerification")
+await shoe.verifyProduct(101)
+const shoe = Shoe.attach("0x5FbDB2315678afecb367f032d93F642f64180aa3")
+const Shoe = await ethers.getContractFactory("ShoeVerification")
+await shoe.verifyProduct(101)
+const shoe = Shoe.attach("0x5FbDB2315678afecb367f032d93F642f64180aa3")
+const Shoe = await ethers.getContractFactory("ShoeVerification")
+await shoe.verifyProduct
+const shoe = Shoe.attach("PASTE_YOUR_CONTRACT_ADDRESS")
+const Shoe = await ethers.getContractFactory("ShoeVerification")
