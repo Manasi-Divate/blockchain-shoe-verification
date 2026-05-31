@@ -1,70 +1,39 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Local Development — exact commands
 
-In the project directory, you can run:
+Follow these steps in separate terminals (Windows) to run the full stack locally.
 
-### `npm start`
+1) Terminal A — start Hardhat node (leave running):
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npx hardhat node
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2) Terminal B — deploy the smart contract to the local node (run after Terminal A is up):
 
-### `npm test`
+```bash
+npx hardhat run scripts/deploy.js --network localhost
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Note the `Contract deployed to:` address printed by the deploy script. Update `src/blockchain/contract.js` `contractAddress` with that address if it differs from the default.
 
-### `npm run build`
+3) Terminal C — install dependencies (first time) and start the React app:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm install
+npm start
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4) Browser / MetaMask — connect to the local chain:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Open MetaMask and add a custom RPC: `http://localhost:8545` (or `http://127.0.0.1:8545`).
+- Import an account using one of the private keys printed by `npx hardhat node` (the node prints funded accounts). Select that account in MetaMask.
 
-### `npm run eject`
+Now open `http://localhost:3000` in your browser. Use the `Manufacturer` page to register a product — on success the app will redirect through Distributor → Retailer → Consumer.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+If you change the deployed contract address, update `src/blockchain/contract.js` and restart the React app.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+If you want me to automatically deploy and update `src/blockchain/contract.js`, say "deploy and update" and I'll run the deploy and patch the address for you.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
