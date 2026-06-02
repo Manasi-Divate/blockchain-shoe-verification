@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { getContract } from "../blockchain/contract";
 import { fetchJsonFromIpfs } from "../blockchain/ipfs";
 
@@ -10,8 +11,18 @@ export default function Consumer({ theme }) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const id = params.get("productId");
-    if (id) setProductId(id);
+    if (id) {
+      setProductId(id);
+    }
   }, []);
+
+  const resolveImagePath = (src) => {
+    if (!src) return null;
+    if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("/")) {
+      return src;
+    }
+    return `/images/${src}`;
+  };
 
   const verifyProduct = async () => {
     if (!productId) {
@@ -32,7 +43,7 @@ export default function Consumer({ theme }) {
         try {
           const cid = metadataUri.replace("ipfs://", "");
           const ipfsMeta = await fetchJsonFromIpfs(cid);
-          image = ipfsMeta.image;
+          image = resolveImagePath(ipfsMeta.image);
           description = ipfsMeta.description;
         } catch (err) {
           console.warn("IPFS metadata fetch failed", err);
@@ -41,7 +52,7 @@ export default function Consumer({ theme }) {
 
       if (!image) {
         try {
-          image = localStorage.getItem(`product:${productId}:image`);
+          image = resolveImagePath(localStorage.getItem(`product:${productId}:image`));
         } catch {
           image = null;
         }
@@ -79,6 +90,21 @@ export default function Consumer({ theme }) {
   const inputClass = isDark ? "w-full bg-zinc-900 border border-gray-700 rounded-2xl px-6 py-4 text-white" : "w-full bg-white border border-gray-300 rounded-2xl px-6 py-4 text-black";
   const cardBgClass = isDark ? "mt-10 bg-zinc-900 border" : "mt-10 bg-white border";
   const cardTextClass = isDark ? "text-gray-400" : "text-slate-600";
+  const qrValue = productData
+    ? JSON.stringify({
+        id: productData.id,
+        name: productData.name,
+        brand: productData.brand,
+        manufacturer: productData.manufacturer,
+        distributor: productData.distributor,
+        retailer: productData.retailer,
+        status: productData.status,
+        verified: productData.verified,
+        description: productData.description,
+        image: productData.image,
+        verifyLink: `${window.location.origin}/consumer?productId=${productData.id}`
+      })
+    : "";
 
   return (
     <section className={`px-10 pb-20 ${isDark ? "bg-black" : "bg-white"}`}>
@@ -102,28 +128,48 @@ export default function Consumer({ theme }) {
 
         {productData && (
           <div className={`${cardBgClass} ${productData.verified ? "border-green-500" : "border-red-500"} rounded-3xl p-8`}>
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
               <div>
-                  <h3 className={`text-3xl font-bold ${isDark ? "text-white" : "text-black"}`}>{productData.name || "Unknown Product"}</h3>
+                <h3 className={`text-3xl font-bold ${isDark ? "text-white" : "text-black"}`}>{productData.name || "Unknown Product"}</h3>
                 <p className={`${cardTextClass} mt-2`}>Product ID: {productData.id}</p>
               </div>
 
-              <div className={`font-bold text-xl ${productData.verified ? "text-green-400" : "text-red-400"}`}>
+              <div className={`inline-flex items-center rounded-full px-4 py-3 text-sm font-semibold ${productData.verified ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/20" : "bg-red-500/10 text-red-300 border border-red-500/20"}`}>
                 {productData.verified ? "✓ Authentic" : "✗ Fake"}
               </div>
             </div>
 
-              <div className="grid md:grid-cols-3 gap-6 mt-10">
-                <div className="md:col-span-1">
-                  <img src={productData.image || '/images/nike.jpg'} alt={productData.name} className="w-full h-48 object-cover rounded-2xl" onError={(e)=>{e.currentTarget.src='/images/nike.jpg'}} />
-                  {productData.description && <p className={`mt-3 ${cardTextClass}`}>{productData.description}</p>}
+            <div className="space-y-6 mt-10">
+              <div className="grid gap-6 lg:grid-cols-[minmax(280px,360px)_1fr]">
+                <div className="rounded-3xl overflow-hidden border border-gray-700">
+                  <img src={productData.image || '/images/nike.jpg'} alt={productData.name} className="w-full h-64 object-cover" onError={(e)=>{e.currentTarget.src='/images/nike.jpg'}} />
                 </div>
-              <InfoCard title="Brand" value={productData.brand} theme={theme} />
-              <InfoCard title="Manufacturer" value={productData.manufacturer} theme={theme} />
-              <InfoCard title="Distributor" value={productData.distributor || "Not updated yet"} theme={theme} />
-              <InfoCard title="Retailer" value={productData.retailer || "Not updated yet"} theme={theme} />
-              <InfoCard title="Current Status" value={productData.status || "Not registered"} theme={theme} />
-              <InfoCard title="Blockchain Status" value={productData.verified ? "Verified" : "Fake"} theme={theme} />
+
+                <div className={`rounded-3xl p-6 ${isDark ? 'bg-zinc-950/80 border border-gray-700' : 'bg-slate-50 border border-gray-200'}`}>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-slate-500'} uppercase tracking-[0.2em] mb-4 text-center`}>Scan to Verify</p>
+                  <div className="flex justify-center">
+                    {qrValue ? (
+                      <QRCodeSVG value={qrValue} size={180} bgColor={isDark ? "#000000" : "#ffffff"} fgColor={isDark ? "#ffffff" : "#000000"} />
+                    ) : (
+                      <div className={`h-44 w-44 rounded-2xl ${isDark ? 'bg-zinc-900' : 'bg-slate-100'} flex items-center justify-center text-sm text-gray-500`}>
+                        QR code will appear here
+                      </div>
+                    )}
+                  </div>
+                  <p className={`mt-4 text-center text-sm ${cardTextClass}`}>Scan this QR code to verify the product details instantly.</p>
+                </div>
+              </div>
+
+              {productData.description && <p className={`text-sm leading-7 ${cardTextClass}`}>{productData.description}</p>}
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                <InfoCard title="Brand" value={productData.brand} theme={theme} />
+                <InfoCard title="Manufacturer" value={productData.manufacturer} theme={theme} />
+                <InfoCard title="Distributor" value={productData.distributor || "Not updated yet"} theme={theme} />
+                <InfoCard title="Retailer" value={productData.retailer || "Not updated yet"} theme={theme} />
+                <InfoCard title="Current Status" value={productData.status || "Not registered"} theme={theme} />
+                <InfoCard title="Blockchain Status" value={productData.verified ? "Verified" : "Fake"} theme={theme} />
+              </div>
             </div>
           </div>
         )}
