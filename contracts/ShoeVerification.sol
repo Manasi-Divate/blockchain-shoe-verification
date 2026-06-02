@@ -11,6 +11,7 @@ contract ShoeVerification {
         string distributor;
         string retailer;
         string status;
+        string metadataURI;
         bool isVerified;
     }
 
@@ -20,7 +21,8 @@ contract ShoeVerification {
         uint256 _productId,
         string memory _name,
         string memory _brand,
-        string memory _manufacturer
+        string memory _manufacturer,
+        string memory _metadataURI
     ) public {
         shoes[_productId] = Shoe(
             _productId,
@@ -30,6 +32,7 @@ contract ShoeVerification {
             "",
             "",
             "Manufactured",
+            _metadataURI,
             true
         );
     }
@@ -64,6 +67,7 @@ contract ShoeVerification {
         string memory,
         string memory,
         string memory,
+        string memory,
         bool
     ) {
         Shoe memory shoe = shoes[_productId];
@@ -76,6 +80,7 @@ contract ShoeVerification {
             shoe.distributor,
             shoe.retailer,
             shoe.status,
+            shoe.metadataURI,
             shoe.isVerified
         );
     }

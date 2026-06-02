@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getContract } from "../blockchain/contract";
+import { fetchJsonFromIpfs } from "../blockchain/ipfs";
 
 export default function Consumer({ theme }) {
   const isDark = theme === "dark";
@@ -23,9 +24,36 @@ export default function Consumer({ theme }) {
 
       const result = await contract.verifyProduct(Number(productId));
 
-      // also load off-chain metadata (image, description) from localStorage
-      const image = (() => { try { return localStorage.getItem(`product:${productId}:image`); } catch { return null; } })();
-      const description = (() => { try { return localStorage.getItem(`product:${productId}:description`); } catch { return null; } })();
+      let image = null;
+      let description = '';
+      const metadataUri = result[7];
+
+      if (metadataUri && metadataUri.startsWith("ipfs://")) {
+        try {
+          const cid = metadataUri.replace("ipfs://", "");
+          const ipfsMeta = await fetchJsonFromIpfs(cid);
+          image = ipfsMeta.image;
+          description = ipfsMeta.description;
+        } catch (err) {
+          console.warn("IPFS metadata fetch failed", err);
+        }
+      }
+
+      if (!image) {
+        try {
+          image = localStorage.getItem(`product:${productId}:image`);
+        } catch {
+          image = null;
+        }
+      }
+
+      if (!description) {
+        try {
+          description = localStorage.getItem(`product:${productId}:description`) || '';
+        } catch {
+          description = '';
+        }
+      }
 
       setProductData({
         id: result[0].toString(),
@@ -35,7 +63,7 @@ export default function Consumer({ theme }) {
         distributor: result[4],
         retailer: result[5],
         status: result[6],
-        verified: result[7],
+        verified: result[8],
         image: image || '/images/nike.jpg',
         description: description || ''
       });

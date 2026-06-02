@@ -2,6 +2,7 @@ import { useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { useNavigate } from "react-router-dom";
 import { getContract } from "../blockchain/contract";
+import { addJsonToIpfs } from "../blockchain/ipfs";
 
 export default function Manufacturer({ theme }) {
   const isDark = theme === "dark";
@@ -22,18 +23,30 @@ export default function Manufacturer({ theme }) {
 
     try {
       setLoading(true);
+
+      const metadata = {
+        productId: Number(mProductId),
+        image: mImage,
+        description: mDescription,
+        registeredAt: new Date().toISOString(),
+      };
+
+      const cid = await addJsonToIpfs(metadata);
+      const metadataURI = cid ? `ipfs://${cid}` : "";
+
       const contract = await getContract();
 
       const tx = await contract.registerProduct(
         Number(mProductId),
         mName,
         mBrand,
-        mManufacturer
+        mManufacturer,
+        metadataURI
       );
 
       await tx.wait();
 
-      // persist extra product metadata off-chain (localStorage) so UI can show image/description
+      // keep a local fallback for browser display if IPFS retrieval is delayed
       try {
         localStorage.setItem(`product:${mProductId}:image`, mImage);
         localStorage.setItem(`product:${mProductId}:description`, mDescription);
