@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const defaultContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS || defaultContractAddress;
+const allowedChainIds = (process.env.REACT_APP_ALLOWED_CHAIN_IDS || "31337,1337").split(",").map((id) => id.trim());
 
 const contractABI = [
   {
@@ -63,10 +65,11 @@ export const getContract = async () => {
   await provider.send("eth_requestAccounts", []);
 
   const network = await provider.getNetwork();
-  console.log("CONNECTED CHAIN ID:", network.chainId.toString());
+  const currentChainId = network.chainId.toString();
+  console.log("CONNECTED CHAIN ID:", currentChainId);
 
-  if (network.chainId.toString() !== "31337") {
-    alert("Please switch MetaMask to Hardhat Localhost");
+  if (!allowedChainIds.includes(currentChainId)) {
+    alert(`Please switch MetaMask to a supported local network (${allowedChainIds.join(", ")}).`);
     throw new Error("Wrong network");
   }
 

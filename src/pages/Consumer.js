@@ -18,8 +18,17 @@ export default function Consumer({ theme }) {
 
   const resolveImagePath = (src) => {
     if (!src) return null;
+    // if it's already an absolute url or a PDF path, return as-is
     if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("/")) {
+      // if jpg/png extension, prefer pdf sibling
+      if (/\.(jpe?g|png)$/i.test(src)) {
+        return src.replace(/\.(jpe?g|png)$/i, '.pdf');
+      }
       return src;
+    }
+    // src is a filename like 'nike.jpg' or 'nike.pdf' — normalize to /images/* and prefer .pdf
+    if (/\.(jpe?g|png)$/i.test(src)) {
+      return `/images/${src.replace(/\.(jpe?g|png)$/i, '.pdf')}`;
     }
     return `/images/${src}`;
   };
@@ -75,7 +84,7 @@ export default function Consumer({ theme }) {
         retailer: result[5],
         status: result[6],
         verified: result[8],
-        image: image || '/images/nike.jpg',
+        image: image || '/images/nike.pdf',
         description: description || ''
       });
     } catch (error) {
@@ -142,7 +151,9 @@ export default function Consumer({ theme }) {
             <div className="space-y-6 mt-10">
               <div className="grid gap-6 lg:grid-cols-[minmax(280px,360px)_1fr]">
                 <div className="rounded-3xl overflow-hidden border border-gray-700">
-                  <img src={productData.image || '/images/nike.jpg'} alt={productData.name} className="w-full h-64 object-cover" onError={(e)=>{e.currentTarget.src='/images/nike.jpg'}} />
+                  <object data={productData.image || '/images/nike.pdf'} type="application/pdf" className="w-full h-64 object-cover">
+                    <img src="/images/nike.svg" alt={productData.name} className="w-full h-64 object-cover" />
+                  </object>
                 </div>
 
                 <div className={`rounded-3xl p-6 ${isDark ? 'bg-zinc-950/80 border border-gray-700' : 'bg-slate-50 border border-gray-200'}`}>

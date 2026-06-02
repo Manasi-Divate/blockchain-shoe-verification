@@ -10,7 +10,7 @@ export default function Manufacturer({ theme }) {
   const [mName, setMName] = useState("");
   const [mBrand, setMBrand] = useState("");
   const [mManufacturer, setMManufacturer] = useState("");
-  const [mImage, setMImage] = useState("nike.jpg");
+  const [mImage, setMImage] = useState("nike.pdf");
   const [mDescription, setMDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -112,10 +112,10 @@ export default function Manufacturer({ theme }) {
 
         <label className="block text-sm mb-2">Shoe Image</label>
         <select value={mImage} onChange={(e) => setMImage(e.target.value)} className={inputClass}>
-          <option value="nike.jpg">nike.jpg</option>
-          <option value="adidas.jpg">adidas.jpg</option>
-          <option value="puma.jpg">puma.jpg</option>
-          <option value="newbalance.jpg">newbalance.jpg</option>
+          <option value="nike.pdf">nike.pdf</option>
+          <option value="adidas.pdf">adidas.pdf</option>
+          <option value="puma.pdf">puma.pdf</option>
+          <option value="newbalance.pdf">newbalance.pdf</option>
         </select>
 
         <textarea
@@ -128,7 +128,9 @@ export default function Manufacturer({ theme }) {
         {/* Preview image */}
         <div className="my-4">
           <p className="text-sm mb-2">Preview</p>
-          <img src={`/images/${mImage}`} alt="preview" className="w-48 h-32 object-cover rounded-lg shadow-md" onError={(e)=>{e.currentTarget.src='/images/nike.jpg'}} />
+          <object data={`/images/${mImage}`} type="application/pdf" className="w-48 h-32 object-cover rounded-lg shadow-md">
+            <img src="/images/nike.svg" alt="preview" className="w-48 h-32 object-cover rounded-lg shadow-md" />
+          </object>
         </div>
 
         <button

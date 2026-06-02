@@ -44,13 +44,9 @@ export default function Home({ theme }) {
 
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             <article className={`overflow-hidden rounded-3xl border ${isDark ? "border-slate-800 bg-slate-900/80" : "border-slate-200 bg-white shadow-sm"}`}>
-              <img
-                src="/images/nike.jpg"
-                alt="Premium Nike style sneaker"
-                loading="lazy"
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/nike.svg'; }}
-                className="h-56 w-full object-cover"
-              />
+              <object data="/images/nike.pdf" type="application/pdf" className="h-56 w-full object-cover">
+                <img src="/images/nike.svg" alt="Premium Nike style sneaker" loading="lazy" className="h-56 w-full object-cover" />
+              </object>
               <div className="p-5 text-left">
                 <p className="text-sm uppercase tracking-[0.25em] text-sky-400">Nike</p>
                 <h3 className={`mt-3 text-xl font-semibold ${isDark ? "text-white" : "text-slate-950"}`}>
@@ -63,13 +59,9 @@ export default function Home({ theme }) {
             </article>
 
             <article className={`overflow-hidden rounded-3xl border ${isDark ? "border-slate-800 bg-slate-900/80" : "border-slate-200 bg-white shadow-sm"}`}>
-              <img
-                src="/images/adidas.jpg"
-                alt="Adidas inspired sneaker display"
-                loading="lazy"
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/adidas.svg'; }}
-                className="h-56 w-full object-cover"
-              />
+              <object data="/images/adidas.pdf" type="application/pdf" className="h-56 w-full object-cover">
+                <img src="/images/adidas.svg" alt="Adidas inspired sneaker display" loading="lazy" className="h-56 w-full object-cover" />
+              </object>
               <div className="p-5 text-left">
                 <p className="text-sm uppercase tracking-[0.25em] text-emerald-400">Adidas</p>
                 <h3 className={`mt-3 text-xl font-semibold ${isDark ? "text-white" : "text-slate-950"}`}>
@@ -82,13 +74,9 @@ export default function Home({ theme }) {
             </article>
 
             <article className={`overflow-hidden rounded-3xl border ${isDark ? "border-slate-800 bg-slate-900/80" : "border-slate-200 bg-white shadow-sm"}`}>
-              <img
-                src="/images/puma.jpg"
-                alt="Puma style athletic shoe"
-                loading="lazy"
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/puma.svg'; }}
-                className="h-56 w-full object-cover"
-              />
+              <object data="/images/puma.pdf" type="application/pdf" className="h-56 w-full object-cover">
+                <img src="/images/puma.svg" alt="Puma style athletic shoe" loading="lazy" className="h-56 w-full object-cover" />
+              </object>
               <div className="p-5 text-left">
                 <p className="text-sm uppercase tracking-[0.25em] text-fuchsia-400">Puma</p>
                 <h3 className={`mt-3 text-xl font-semibold ${isDark ? "text-white" : "text-slate-950"}`}>
@@ -101,13 +89,9 @@ export default function Home({ theme }) {
             </article>
 
             <article className={`overflow-hidden rounded-3xl border ${isDark ? "border-slate-800 bg-slate-900/80" : "border-slate-200 bg-white shadow-sm"}`}>
-              <img
-                src="/images/newbalance.jpg"
-                alt="New Balance inspired lifestyle sneaker"
-                loading="lazy"
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/images/newbalance.svg'; }}
-                className="h-56 w-full object-cover"
-              />
+              <object data="/images/newbalance.pdf" type="application/pdf" className="h-56 w-full object-cover">
+                <img src="/images/newbalance.svg" alt="New Balance inspired lifestyle sneaker" loading="lazy" className="h-56 w-full object-cover" />
+              </object>
               <div className="p-5 text-left">
                 <p className="text-sm uppercase tracking-[0.25em] text-amber-400">New Balance</p>
                 <h3 className={`mt-3 text-xl font-semibold ${isDark ? "text-white" : "text-slate-950"}`}>
